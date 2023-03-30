@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created on 2023-03-24
@@ -235,8 +236,6 @@ public class Chapter_02_DataStructure {
         }
 
         System.out.println("AVG Height : "+Math.floor(((total*1.0)/array.length)*10)/10);
-
     }
-
 
 }
