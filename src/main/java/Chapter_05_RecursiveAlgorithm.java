@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 /**
  * Created on 2023-03-31
  * Project 2023JavaStudy
@@ -32,8 +34,62 @@ public class Chapter_05_RecursiveAlgorithm {
      *  [1] 22 x 8 크기의 직사각형에서 짧은 변(8)을 한 변으로 하는 정사각형으로 분할한다. 이렇게 하면 8 X 8 두 개, 8 X 6 하나가 남는다.
      *  [2] 남은 8 X 6 크기의 직사각형으로 다시 같은 과정으로 6 X 6 크기의 정사각형이 1개, 6 X 2 크기의 직사각형 1개 남는다.
      *  [3] 다시 남은 6 X 2 크기의 직사각형으로 같은 과정을 수행한다. 2 X 2 정사각형 3개로 나눌 수 있다. 여기서 얻은 2가 최대공약수이다.
-     *
      */
+    public int gcd(int x, int y){
+        if(y == 0) return x;
+        else return gcd(y, x % y);
+    }
+    @Test
+    void EuclidGCD(){
+        System.out.println(gcd(288, 144));
+    }
+
+    @Test
+    void factorialWithoutRecursive(){
+        int target = 10;
+        int result = 1;
+        do {
+            if( target >= 1) result *= (target--);
+            else {
+                result *= 1;
+                target--;
+            }
+        } while (target >= 0);
+
+        System.out.println(result);
+    }
+    @Test
+    void euclidGCDWithoutRecursive(){
+        int x = 144;
+        int y = 12;
+
+        do {
+            if(y == 0) {
+                System.out.println(x);
+                break;
+            } else {
+                int temp = y;
+                y = x % y;
+                x = temp;
+            }
+        } while( true );
+    }
+
+    @Test
+    void euclidArray(){
+        int[] array = {12,144,288};
+        int[] results = new int[array.length - 1];
+        for ( int i = 1; i < array.length; i++){
+            int x = array[i - 1];
+            int y = array[i];
+            results[i - 1] = gcd(x, y);
+        }
+
+        Arrays.stream(results).sorted().toArray();
+        System.out.println(results[0]);
+    }
+
+
 
 
 }
