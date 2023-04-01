@@ -43,6 +43,8 @@ public class Chapter_04_StackAndQueue {
      * 논리적으로 맨 처음 요소는 front, 맨 마지막 요소는 rear가 된다.
      *
      * 링 버퍼는 '오래된 데이터를 버리는' 용도로 사용할 수 있다.
+     *
+     *
      */
 }
 
@@ -164,6 +166,5 @@ class IntRingBuffer {
         if(front == max) front = 0;
         return x;
     }
-
 
 }
