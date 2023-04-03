@@ -436,5 +436,119 @@ public class Chapter_06_Sort {
      *      배열을 두 그룹으로 나누기
      * 먼저 배열을 두 그룹으로 나누는 순서를 알아보자
      *
+     * pl           pv          pr
+     *  5  7  1  4  6  2  3  9  8
+     *
+     *  피벗으로 6을 선택했고 요수 인덱스의 pl을 왼쪽 커서, 오른쪽 끝 요소의 인덱스를 pr을 오른쪽 커서라고 하자
+     *  그룹을 나누려면 피벗 이하의 요소를 배열 왼쪽으로, 이상의 요소를 배열 오른쪽으로 옮겨야 한다.
+     *
+     *
+     *        1. a[pl] >= x가 성립하는 요소를 찾을 때까지 pl을 오른쪽으로 스캔한다.
+     *        2. a[pr] <= x가 성립하는 요소를 찾을 때까지 pr을 왼쪽으로 스캔한다.
+     *
+     *  두 커서가 가리키는 요소의 값을 서로 교환한다. 그러면 피벗 이하의 값은 왼쪽, 이상의 값은 오른쪽으로 이동할 것이다.
+     *  이후 다시 스캔을 진행하고 바꾸기를 반복한다. 그리하여 pl, pr이 종료하면 그룹을 나누는 과정을 종료한다.
      */
+
+    @Test
+    void pivot(){
+        int[] array = { 1, 8, 7, 4, 5, 2, 6, 3, 9 };
+        int pl = 0;
+        int pr = array.length - 1;
+        int x = array[array.length / 2];
+        do {
+            while(array[pl] < x) pl++;
+            while(array[pr] > x) pr--;
+            if(pl <= pr) swap(array, pl++, pr--);
+        } while(pl <= pr);
+
+        System.out.printf("Pivot : %s\n", x);
+
+        System.out.println("피벗 이하");
+        for (int i = 0; i <= pl - 1; i ++){
+            System.out.println(array[i]);
+        }
+
+        if(pl > pr + 1) {
+            System.out.println("피벗 동일");
+            for (int i = pr + 1; i <= pl - 1; i++){
+                System.out.println(array[i]);
+            }
+        }
+
+        System.out.println("피벗 이상");
+        for(int i = pr + 1; i < array.length; i++){
+            System.out.println(array[i]);
+        }
+    }
+
+    /**
+     *      퀵 정렬
+     * 앞에서는 배열을 피벗 기준으로 나누기반 했다. 이 방법을 조금 더 발전시키면 퀵 정렬 알고리즘이 된다.
+     */
+
+    void quickSort(int[] array, int left, int right){
+        int pl = left;
+        int pr = right;
+        int x = array[(pl + pr) / 2];
+
+        System.out.printf("array[%d] ~ array[%d]: {", left, right);
+        for ( int i = left; i < right; i++){
+            System.out.printf("%d, ",array[i]);
+        }
+        System.out.printf("%d} \n", array[right]);
+
+
+        do {
+            while(array[pl] < x) pl ++;
+            while(array[pr] > x) pr --;
+            if(pl <= pr) swap(array, pl++, pr--);
+        } while (pl <= pr);
+        if( left < pr ) quickSort(array, left, pr);
+        if( pl < right ) quickSort(array, pl, right);
+    }
+
+    @Test
+    void quickSortTest(){
+        int[] array = {5, 8, 4, 2, 6, 1, 3, 9, 7};
+        quickSort(array, 0, array.length - 1);
+        print(array);
+    }
+
+    @Test
+    void quickSortNoRecursive(){
+        int[] array = {5, 8, 4, 2, 6, 1, 3, 9, 7};
+        int left = 0;
+        int right = array.length - 1;
+        IntStack lstack = new IntStack(right - left + 1);
+        IntStack rstack = new IntStack(right - left + 1);
+
+        lstack.push(left);
+        rstack.push(right);
+
+        while( !lstack.isEmpty() ){
+            int pl = left = lstack.pop();
+            int pr = right = rstack.pop();
+
+            int x = array[(left + right) / 2];
+
+            do {
+                while (array[pl] < x) pl ++;
+                while (array[pr] > x) pr --;
+                if(pl <= pr) swap(array, pl++, pr--);
+            } while (pl <= pr);
+
+            if ( left < pr){
+                lstack.push(left);
+                rstack.push(pr);
+            }
+
+            if (pl < right){
+                lstack.push(pl);
+                rstack.push(right);
+            }
+        }
+
+        print(array);
+    }
 }
