@@ -1,13 +1,15 @@
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
  * Created on 2023-04-03
  * Project 2023JavaStudy
  */
-public class Chapter_06_Sort {
+public class Chapter_06_Sort_part1 {
     /**
      *      정렬이란?
      * 정렬은 대소 관계에 따라 데이터 집합을 일정한 순서로 줄지어 늘어서도록 바꾸는 작업을 말한다.
@@ -504,6 +506,8 @@ public class Chapter_06_Sort {
             while(array[pr] > x) pr --;
             if(pl <= pr) swap(array, pl++, pr--);
         } while (pl <= pr);
+
+
         if( left < pr ) quickSort(array, left, pr);
         if( pl < right ) quickSort(array, pl, right);
     }
@@ -520,15 +524,16 @@ public class Chapter_06_Sort {
         int[] array = {5, 8, 4, 2, 6, 1, 3, 9, 7};
         int left = 0;
         int right = array.length - 1;
-        IntStack lstack = new IntStack(right - left + 1);
-        IntStack rstack = new IntStack(right - left + 1);
+        IntStack lstack = new IntStack(right - left + 1);  // 나눌 범위의 왼쪽 끝 요소
+        IntStack rstack = new IntStack(right - left + 1);  // 나눌 범위의 오른쪽 끝 요소
 
         lstack.push(left);
         rstack.push(right);
-
+        int count = 1;
         while( !lstack.isEmpty() ){
             int pl = left = lstack.pop();
             int pr = right = rstack.pop();
+            System.out.printf("%-"+1+"s{%d, %d}로 분할 \n", "", pl, pr);
 
             int x = array[(left + right) / 2];
 
@@ -542,13 +547,181 @@ public class Chapter_06_Sort {
                 lstack.push(left);
                 rstack.push(pr);
             }
-
             if (pl < right){
                 lstack.push(pl);
                 rstack.push(right);
             }
         }
+        System.out.printf("\nresult : ");
+        print(array);
+    }
+
+    /**
+     *  스택의 용량
+     *  위 예시는 스택의 용량을 배열의 요소 소로 초기화한다. 그러면 스택의 용량은 어느 정도 크기가 적당할까?
+     *  사실 크기가 어느 정도인지가 궁금하다기 보다는 순서에 따라서 스택에 저장되는 양의 차이가 있는지가 궁금해서 한 질문일 것이라 보인다.
+     *  결론적으로 최초 분할 후 어떤 부분을 지속 분할하는 지에 따라 스택이 쌓이는 양이 조금씩 달라진다.
+     *
+     *  일반적으로 요소의 개수가 적은 배열일수록 적은 횟수로 분할을 종료할 수 있다. 따라서 요소의 개수가 적은 그룹을 먼저 분할하면 스택에
+     *  동시에 쌓이는 데이터의 최대 개수가 적어진다.
+     */
+
+    void quickSortSmallFirst(int[] array, int left, int right){
+        int pl = left;
+        int pr = right;
+        int x = array[(pl + pr) / 2];
+
+        System.out.println(Math.abs(left - right)  + 1);
+        if(Math.abs(left - right) + 1 > 9){
+            System.out.println("QUICK");
+            do {
+                while(array[pl] < x) pl ++;
+                while(array[pr] > x) pr --;
+                if(pl <= pr) swap(array, pl++, pr--);
+            } while (pl <= pr);
+
+            if(Math.abs(left - pr) < Math.abs(pl - right)){
+                if( left < pr ) quickSortSmallFirst(array, left, pr);
+                if( pl < right ) quickSortSmallFirst(array, pl, right);
+            } else {
+                if( pl < right ) quickSortSmallFirst(array, pl, right);
+                if( left < pr ) quickSortSmallFirst(array, left, pr);
+            }
+        } else {
+            System.out.println("INSERTION "+left+":"+right);
+            for ( int i = left + 1; i <= right; i++){
+                int tmp = array[i];
+                int j = i;
+                for (; j > 0 && array[j - 1] > tmp; j--){
+                    array[j] = array[j - 1];
+                }
+                array[j] = tmp;
+            }
+        }
+    }
+    @Test
+    void quickSortSmallestElement(){
+        int[] array = {45,2,910,2943,201058,238, 3,5,12,2,54,12,2};
+        int left = 0;
+        int right = array.length - 1;
+
+        quickSortSmallFirst(array, left, right);
+        print(array);
+    }
+
+    /**
+     *      피벗 선택하기
+     * 피벗을 선택하는 방법은 퀵 정렬 실행 효율에 큰 영향을 준다.
+     *          [ 8, 7, 6, 5, 4, 3, 2, 1, 0 ]
+     * 만약 위 배열에서 피벗을 8로 정하면 8과 나머지로 나뉘며 한쪽으로 치우친 분할을 반복하게 된다. 이렇게 되면 퀵정렬을 사용하는 의미 자체가 퇴색된다.
+     * 배열의 크기가 최대한 균등하게 나눠지게 하기 위해서 인덱스의 중간을 피벗으로 정하면 된다. 그러나 가운데 값을 구하고자 할 경우 그에 대한 처리가
+     * 따로 필요하고 이 처리에 많은 계산시간이 필요한 경우도 생기며 이렇게 진행되더라도 퀵 정렬 선택의 의미가 없어진다.
+     *
+     * 이러한 문제를 해결하기 위해서 아래와 같은 방법을 사용하면 최악의 경우는 피할 수 있다.
+     *
+     *       >  방법 1. 나눌 배열의 요소 개수가 3 개 이상이면 임의로 요소 3개를 선택하고 그 중에서 중앙값인 요소를 피벗으로 선택한다.
+     *
+     * 예를 들면 위 배열에서 첫(8), 중간(4), 끝(0) 중에서 한 요소를 선택하는 경우, 중간 크기의 값 4로 피벗을 채택하면 최악의 그루핑은 막을 수 있다.
+     *
+     *       > 방법 2.  나눌 배열의 처음, 가운데, 끝 요소를 정렬한 다음 가운데 요소와 끝에서 두 번째 요소를 교환한다. 피벗으로 끝에서
+     *       두 번째 요소의 값 (a[right - 1])을 선택하여 나눌 대상의 범위를 a[left + 1] ~ a[right - 2]로 좁힌다.
+     *
+     *          [ 8, 7, 6, 5, 4, 3, 2, 1, 0 ] 원본
+     *
+     *          : 첫 요소, 가운데 요소, 끝 요소를 정렬한다.
+     *          [ 0, 7, 6, 5, 4, 3, 2, 1, 8 ]
+     *
+     *          : 가운데 요소와 끝에서 두 번째 요소를 교환한다.
+     *          [ 0, 7, 6, 5, 1, 3, 2, 4, 8 ]
+     *
+     *          :교환한 요소(4)를 피벗으로 두고 (left + 1) ~ (right -2) 사이를 피벗 정렬한다.
+     *          [ 0, 7, 6, 5, 1, 3, 2, 4, 8 ]
+     *              |->  정렬 구간   <-|
+     *
+     *  이 방법은 나눌 그룹의 크기가 한쪽으로 치우치는 것을 피하면서도 나눌 때 스캔할 요소를 3개씩 줄일 수 있다.
+     */
+    void quickPivotSort1(int[] array, int left, int right){
+        int pl = left;
+        int pr = right - 1;
+        int pivot = array[(pl + pr) / 2];
+
+        System.out.println(left +" : "+ right);
+        if(array.length > 3){
+            int lowest = array[pl];
+            int middle = array[(pl + pr) / 2];
+            int highest = array[pr];
+            int[] temp = {lowest, middle, highest};
+            for (int i = 0; i < temp.length; i++){
+                for( int j = temp.length - 1; j > i; j--){
+                    if(temp[j - 1] > temp[j]){
+                        swap(temp, j-1, j);
+                    }
+                }
+            }
+            pivot = temp[1];
+        }
+        do {
+            while(array[pl] < pivot) pl++;
+            while(array[pr] > pivot) pr--;
+
+            if(pl <= pr) swap(array, pl++, pr--);
+        } while (pl <= pr);
+
+        if(left < pr) quickPivotSort1(array, left, pr);
+        if(pl < right) quickPivotSort1(array, pl, right);
+    }
+    @Test
+    void quickPivotSort1(){
+        int[] array = {8, 7, 6, 5, 4, 3, 2, 1, 0};
+        int left = 0;
+        int right = array.length;
+        quickPivotSort1(array, left, right);
+        print(array);
+    }
+
+    void quickPivotSort2(int[] array, int left, int right){
+        int pl = left;
+        int pr = right;
+        int center = Math.round((left + right) / 2);
+        int pivot = array[( left + right ) / 2];
+        if(array.length >= 3){
+            int[] tmp = {array[left],array[center], array[right]};
+            for( int i = 0; i < tmp.length; i++){
+                for(int j = tmp.length - 1; j > i; j--){
+                    if(tmp[j - 1] > tmp[j]) swap(tmp, j - 1, j);
+                }
+            }
+
+            int tmporValue = array[right - 1];
+            array[right - 1] = array[center];
+            array[center] = tmporValue;
+            pivot = array[right - 1];
+            left +=1;
+            right -= 2;
+        }
+        do {
+            while (array[pl] < pivot) pl++;
+            while (array[pr] > pivot) pr--;
+            if(pl <= pr) swap(array, pl++, pr--);
+        } while(pl <= pr);
+
+        if(left < pr) quickPivotSort2(array, left, pr);
+        if(pl < right) quickPivotSort2(array, pl, right);
+    }
+    @Test
+    void quickPivotSort2Test(){
+        int[] array = {8, 7, 6, 5, 4, 3, 2, 1, 0};
+        int left = 0;
+        int right = array.length -1 ;
+
+
+
+
+        quickPivotSort2(array, left, right);
+
+
 
         print(array);
     }
+
 }
