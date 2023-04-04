@@ -110,6 +110,7 @@ public class Chapter_06_Sort_part2 {
                 array[resultIndx++] = buff[rightBufferIndex++]; //작업 결과물을 담은 버퍼 배열 원본으로 옮겨 담기
                 //정렬 후 잔존 요소 플러시
             }
+
         }
     }
     @Test
