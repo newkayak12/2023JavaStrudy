@@ -367,5 +367,71 @@ public class Chapter_06_Sort_part2 {
      *
      *          도수 정렬
      *  도수 정렬은 요소의 대소 관계를 판단하지 않고 빠르게 정렬할 수 있는 알고리즘이다.
+     *
+     *  지금까지 정렬 알고리즘은 두 요소의 키 값을 비교해야 했다. 하지만 도수 정렬은 요소를 비교할 필요가 없다. 도수 정렬 알고리즘은
+     *  도수 분포표 작성, 누적 도수 분포표 작성, 목적 배열 만들기 배열 복사의 4단계로 이뤄진다.
+     *
+     *
+     *          1. 도수 분포표 만들기
+     *  int[] scores = [5, 7, 0 , 2, 4, 10, 3, 1, 3]의 원본 배열이라고 하면
+     *  int[] table = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]의 배열을 만들고
+     *
+     *  table[scores[i]]++로 점수를 기록한다.
+     *  [1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 1]
+     *
+     *          2. 누적 도수 분포표 만들기
+     *  도수 분포표를 만들었으니 '0점부터 n 점까지 몇 명의 학생이 있는지' 누적된 값을 나타내는 누적 도수 분포표를 만든다.
+     *  for( int i = 1; i < table.length; i++ {
+     *      table[i] += table[i];
+     *  }
+     *
+     *  결과 [ 1, 2, 3, 5, 6, 7, 7, 8, 8, 9]
+     *
+     *          3. 목적 배열 만들기
+     * 각각의 점수를 받은 학생이 몇 번째 위치하는지 알 수 있다.
+     * for(int i = array.length - 1; i >= 0; i--) {
+     *     b[--f[a[i]]] = a[i];
+     * }
+     *
+     * 남은 작업은 배열의 각 요소값과 누적도수분포표를 대조해서 정렬을 마친 배열을 만드는 작업이다. 이 작업은 원본 배열과 같은 길이를 갖는
+     * 작업용 배열이 필요하다. 그러면 원본 배열의 요소를 마지막 위치부터 처음까지 스캔하면서 누적도수분포표와 대조하는 작업을 수행하면 된다.
+     *
+     */
+
+    @Test
+    void fSortTest(){
+        int[] array = {5, 7, 0 , 2, 4, 10, 3, 1, 3};
+        int max = array[0];
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] > max) max = array[i];
+        }
+
+        int[] accumulateFrequencyDistributionArray = new int[max + 1];
+        int[] bufferArray = new int[array.length];
+
+
+        print(array);
+
+        for ( int i = 0; i < array.length; i++) accumulateFrequencyDistributionArray[array[i]]++;
+        print(accumulateFrequencyDistributionArray);
+
+        for (int i = 1; i <= max; i++) accumulateFrequencyDistributionArray[i] += accumulateFrequencyDistributionArray[i - 1];
+        print(accumulateFrequencyDistributionArray);
+
+        for (int i = array.length - 1; i >= 0; i--) bufferArray[--accumulateFrequencyDistributionArray[array[i]]] = array[i];
+        print(bufferArray);
+
+        for (int i = 0; i < array.length; i++) array[i] = bufferArray[i];
+        print(array);
+
+    }
+    /**
+     * 도수 정렬은 배열의 모든 요소 값이 0 이상 max 값이하라는 전제로 정렬를 수행합니다.
+     *
+     * 도수 정렬 알고리즘은 데이터 비교, 교환 작업 없이 정렬이 가능해 매우 빠르다. 단일 for만을 사용해서 재귀 호출, 이중 for 등이 없어
+     * 아주 효율적이다. 또한 배열의 요소를 건너뛰지 않고 스캔하기 때문에 같은 값에 대해서 순서가 바뀌는 일이 없어 안정적인 정렬 알고리즘이다.
+     * 그러나 3단계에서 원본 배열의 마지막부터 스캔하지 않으면 안정적이지 않다.  이유는 앞에서부터 스캔하면 원본 배열의 같은 수가 대칭으로 뒤바뀌기 때문이다.
+     * (앞에서 뒤로 기록했으면 뒤에서 앞으로 복원해야 안정적이다.)
+     * 하지만 도수 분포표가 필요하기 때문에 최대 ~ 최소 값을 알고 있을 때만 가능하다.
      */
 }
