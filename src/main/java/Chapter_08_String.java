@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created on 2023-04-04
@@ -224,6 +225,55 @@ public class Chapter_08_String {
      *      > 2. 같은 ㅁ눈자가 패턴 안에 중복해서 들어 있지 않다면, 패턴을 옮길 크기는 n이다.
      *
      *   이 건너뛰기 표는 패턴에 존재할 수 있는 문자의 옮길 크기를 계산하고 저장해야 하기 때문에 건너뛰기 표의 요소 개수는 Character.MAX_VALUE + 1 이다.
-     *
      */
+    @Test
+    void boyerMooreTest(){
+        String text = "ABABCDEFGHA";
+        String pattern = "ABC";
+        int resultIndex = -1;
+        int textCursor;
+        int patternCursor;
+        int textLength = text.length();
+        int patternLength = pattern.length();
+
+        int[] skip = new int[Character.MAX_VALUE + 1]; //초기화
+
+        //createSkipTable
+        /**
+         * Key : char
+         * Value: index of pattern char
+         */
+        for( textCursor = 0; textCursor <= Character.MAX_VALUE; textCursor++){
+            skip[textCursor] = patternLength; //전체 다 패턴 길이로 들어감 (패턴 인덱스 안에 없음)
+        }
+        for( textCursor = 0; textCursor < patternLength - 1; textCursor++){
+            skip[pattern.charAt(textCursor)]  = patternLength -textCursor - 1; //해당 글자가 패턴 인덱스 몇 번에 존재하는가?
+        }
+
+//        IntStream.rangeClosed(0, 10).forEach(intValue -> {
+//            System.out.println((char)skip[intValue] + " : " + skip[intValue]);
+//        });
+
+
+        //Search
+        outer: while ( textCursor < textLength ){
+            patternCursor = patternLength - 1; //패턴 검색은 늘 패턴 마지막부터 
+
+            inner: while( text.charAt( textCursor ) == pattern.charAt( patternCursor ) ){ //일치 여부
+                if( patternCursor == 0 ){ //패턴 인덱스 모두 순회했는데 같은 경우
+                    resultIndex = textCursor;
+                    break outer;
+                }
+                patternCursor --; //하나씩 줄여나감
+                textCursor --; //하나씩 줄여가면서 해당 위치 글자와 같은지 체크
+                
+            }
+
+            textCursor += ( (skip[text.charAt(textCursor)]  > patternLength - patternCursor) ? skip[text.charAt(textCursor)] : patternLength - patternCursor);
+            // 검색 단어가 패턴 안에 있는가? && 있더라도 순서가 다른가?                                   //완전 이동                         //부분 이동
+        }
+
+        System.out.println(resultIndex);
+    }
+
 }
