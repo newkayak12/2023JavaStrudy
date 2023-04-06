@@ -1,8 +1,8 @@
+package algorithm;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 /**

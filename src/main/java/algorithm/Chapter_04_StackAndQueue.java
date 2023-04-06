@@ -1,3 +1,5 @@
+package algorithm;
+
 import org.junit.jupiter.api.Test;
 
 /**

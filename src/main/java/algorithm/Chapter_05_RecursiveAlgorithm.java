@@ -1,7 +1,8 @@
+package algorithm;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * Created on 2023-03-31

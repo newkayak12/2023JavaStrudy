@@ -1,3 +1,5 @@
+package algorithm;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -257,7 +259,7 @@ public class Chapter_08_String {
 
         //Search
         outer: while ( textCursor < textLength ){
-            patternCursor = patternLength - 1; //패턴 검색은 늘 패턴 마지막부터 
+            patternCursor = patternLength - 1; //패턴 검색은 늘 패턴 마지막부터
 
             inner: while( text.charAt( textCursor ) == pattern.charAt( patternCursor ) ){ //일치 여부
                 if( patternCursor == 0 ){ //패턴 인덱스 모두 순회했는데 같은 경우
@@ -266,7 +268,7 @@ public class Chapter_08_String {
                 }
                 patternCursor --; //하나씩 줄여나감
                 textCursor --; //하나씩 줄여가면서 해당 위치 글자와 같은지 체크
-                
+
             }
 
             textCursor += ( (skip[text.charAt(textCursor)]  > patternLength - patternCursor) ? skip[text.charAt(textCursor)] : patternLength - patternCursor);
