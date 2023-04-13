@@ -10,7 +10,7 @@ import java.util.List;
  * Created on 2023-04-12
  * Project 2023JavaStudy
  */
-public class C11_Visitor {
+public class C12_Visitor {
     /**
      * 데이터 구조 안에 많은 요소가 저장되어 있고, 각 요소에 대해서 어떠한 처리를 한다고 가정하자. 이때 그 '처리' 코드는 어디에 있어야 할까?
      * 일반적으로 생각하면 데이터 구조를 나타내는 클래스 안에 쓸 것이다. 하지만 그 '처리'가 한 종류가 아니라면?

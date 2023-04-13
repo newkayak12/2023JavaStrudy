@@ -2,7 +2,7 @@ package designPattern;
 
 import org.junit.jupiter.api.Test;
 
-public class C12_Decorate {
+public class C13_Decorate {
     /**
      * 객체에 점점 장식을 더해 가는 디자인 패턴을 Decorator라고 한다.
      *
