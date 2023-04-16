@@ -1,0 +1,5 @@
+<program> ::= program <command list>
+<command list> ::= <command>* end
+<command> ::= <repeat command> Ⅰ <primitive command>
+<repeat command> ::= repeat <number> <command list>
+<primitive command> ::= go | right | left
