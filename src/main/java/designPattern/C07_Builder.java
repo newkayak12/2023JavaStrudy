@@ -157,10 +157,9 @@ public class C07_Builder {
     }
 
     /**
-     * Builder 역할 : 인스턴스를 생성하기 위한 인터페이스를 결정한다. Builder에 인스턴스가 각 부부능ㄹ 만드는 메소드가 준비된다.
+     * Builder 역할 : 인스턴스를 생성하기 위한 인터페이스를 결정한다. Builder에 인스턴스가 각 부분을 만드는 메소드가 준비된다.
      * ConcreteBuilder: Builder의 인터페이스를 구현하는 클래스이다. 실제 인스턴스 생성으로 호출되는 메소드가 여기에 정의된다. (예제에서 TextBuilder, HtmlBuilder)
      * Director: Builder 인터페이스를 사용하여 인스턴스를 생성한다. ConcreteBuilder 역이 무엇이든 잘 작동하도록 Builder의 메소드만 사용한다.
-     *
      *
      *
      *

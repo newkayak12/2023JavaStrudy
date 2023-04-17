@@ -68,7 +68,7 @@ public class C02_Adapter {
 
     /** Case 2: Use Instance */
     //주의점 -> Print는 인터페이스가 아니라 클래스
-    //즉, Banner클래스를 이용해서 Print 클래스와 같은 메소드를 갖는 클래스를 실형하려는 것이다.
+    //즉, Banner클래스를 이용해서 Print 클래스와 같은 메소드를 갖는 클래스를 실행하려는 것이다.
 
     public abstract class Print2 {
         public abstract void printWeak();
