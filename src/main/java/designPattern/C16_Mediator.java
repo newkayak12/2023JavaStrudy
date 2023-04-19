@@ -1,7 +1,5 @@
 package designPattern;
 
-import org.junit.jupiter.api.Test;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -156,11 +154,11 @@ import java.awt.event.*;
                 buttonOk.setColleagueEnabled(false);
             } else {
                 textUser.setColleagueEnabled(true);
-                userpassChnaged();
+                userPasswordChanged();
             }
 
         }
-        private void userpassChnaged() {
+        private void userPasswordChanged() {
             if(textUser.getText().length() > 0){
                 textUser.setColleagueEnabled(true);
 
