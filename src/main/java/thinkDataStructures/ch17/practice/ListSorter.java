@@ -41,41 +41,48 @@ public class ListSorter<T> {
 
             List<T> result = new ArrayList<>();
 
-            result.addAll(left);
-            result.addAll(right);
-            result.sort(comparator);
+//            result.addAll(left);
+//            result.addAll(right);
+//            result.sort(comparator);
 
+            merge(left, right, result, comparator);
+            return result;
+        }
+    }
+
+    private List<T> merge (List<T> left, List<T> right, List<T> result, Comparator<T> comparator) {
+        if( left.isEmpty() && right.isEmpty() ) return result;
+        if( left.isEmpty() ) {
+            result.addAll(right);
+            return result;
+        }
+        if( right.isEmpty() ) {
+            result.addAll(left);
             return result;
         }
 
 
-//
-//        if( copyList.size() <= 3 ){
-//            copyList.sort(comparator);
-//            result = copyList;
-//        }
+        List<T> leftCopy = left.stream().collect(Collectors.toList());
+        List<T> rightCopy = right.stream().collect(Collectors.toList());
+        T leftElement = leftCopy.get(0);
+        T rightElement = rightCopy.get(0);
+        int compare = comparator.compare(leftElement, rightElement);
+        if( compare > 0 ) {
+            result.add(rightElement);
+            rightCopy.remove(rightElement);
+        } else if ( compare < 0){
+            result.add(leftElement);
+            leftCopy.remove(leftElement);
+        } else {
+            result.add(rightElement);
+            result.add(leftElement);
+            leftCopy.remove(leftElement);
+            rightCopy.remove(rightElement);
+        }
 
-//        if( !left.isEmpty() || !right.isEmpty() ){
-//            if(left.isEmpty()) result = right;
-//            if(right.isEmpty()) result = left;
-//            if(!left.isEmpty() && !right.isEmpty()) {
-//                T leftFirst = left.stream().findFirst().get();
-//                T rightFirst = right.stream().findFirst().get();
-//
-//                int compareResult = comparator.compare(leftFirst, rightFirst);
-//                if( compareResult > 0 ) {
-//                    result = right;
-//                    result.addAll(left);
-//                } else if( compareResult == 0) {
-//
-//                } else {
-//                    result = left;
-//                    result.addAll(right);
-//                }
-//            }
-//
-//        }
 
+        merge(leftCopy, rightCopy, result, comparator);
+        return result;
     }
 
 
