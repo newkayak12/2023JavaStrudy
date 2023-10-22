@@ -42,6 +42,17 @@ public class ListSorterExample {
         end = System.nanoTime();
         log.warn("BubbleSort : {} [{}ns]", bubble, (end - start));
 
+        start = System.nanoTime();
+        List<Integer> heap = listSorter.heapSort(array, ((e1, e2) -> e1 - e2));
+        end = System.nanoTime();
+        log.warn("HeapSort : {} [{}ns]", heap, (end - start));
+
+
+        start = System.nanoTime();
+        int top = 5;
+        List<Integer> topK = listSorter.findTopWithBoundedHeapSort(top, array, ((e1, e2) -> e1 - e2));
+        end = System.nanoTime();
+        log.warn("Top {} : {} [{}ns]",5, topK, (end - start));
 
     }
 }

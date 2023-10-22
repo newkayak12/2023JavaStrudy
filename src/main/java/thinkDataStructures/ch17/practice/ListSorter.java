@@ -2,10 +2,7 @@ package thinkDataStructures.ch17.practice;
 
 import com.sun.tools.javac.Main;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -131,6 +128,40 @@ public class ListSorter<T> {
             }
         }
         return copy;
+    }
+
+    public List<T> heapSort( List<T> refList, Comparator<T> comparator ) {
+        List<T> copy = new ArrayList<>(refList);
+
+        PriorityQueue<T> heap = new PriorityQueue<>(copy.size(), comparator);
+        heap.addAll(copy);
+        copy.clear();
+
+        while ( !heap.isEmpty() ) copy.add(heap.poll());
+
+        return copy;
+    }
+
+    public List<T> findTopWithBoundedHeapSort( int k,List<T> refList, Comparator<T> comparator ) {
+        List<T> list = new LinkedList<>(refList);
+
+        PriorityQueue<T> heap = new PriorityQueue<T>(list.size(), comparator);
+        for (T element: list) {
+            if (heap.size() < k) {
+                heap.offer(element);
+                continue;
+            }
+            int cmp = comparator.compare(element, heap.peek());
+            if (cmp > 0) {
+                heap.poll();
+                heap.offer(element);
+            }
+        }
+        List<T> res = new ArrayList<T>();
+        while (!heap.isEmpty()) {
+            res.add(heap.poll());
+        }
+        return res;
     }
 
 

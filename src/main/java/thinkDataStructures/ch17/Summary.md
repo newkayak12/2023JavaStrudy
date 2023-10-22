@@ -154,7 +154,7 @@ public List<T> bubbleSort(List<T> refList, Comparator<T> comparator) {
 각 패스에서 요소에 반복문을 실행하고 버킷에 추가한다. 요소를 버킷에 추가하는 연산이 상수 시간인 한 각 단계는 선형이다. 
 w라는 패스의 수는 단어의 너비에 의존하지만, 단어의 개수인 n에는 의존하지 않는다. 따라서 증가 차수는 O (wn)으로 n에 선형이다.
 
-## 17.5 힙 정렬
+## 17.5 힙 정렬<sup>[[3]](#heapsort)</sup>
 제한된 크기의 요소를 정렬하는 기수 정렬에 더해서 제한된 힙 정렬이라는 또하나의 특수 목적 정렬 알고리즘이 있다. 제한된 힙 정렬은 매우 큰 데이터셋에서
 상위 10개 또는 상위 k개를 보고하는데 유용하다. 이때 k는 n(매우 큰 데이터 셋)보다 훨씬 작아야 한다. 실행 시간은 n log n에 비례하며, 단일 프로그램 메모리에
 모두 적재할 수 없게 때문에 매우 느리다. 이 때는 외부 정렬<sup>[[1]](#extSort)</sup> 알고리즘을 사용해야한다.
@@ -168,10 +168,32 @@ w라는 패스의 수는 단어의 너비에 의존하지만, 단어의 개수�
 힙에 있는 가장 작은 요소는 항상 루트에 있고 상수 시간으로 찾을 수 있다. 추가하거나 제거하는 시간은 트리의 높이인 h에 비례한다. 
 힙은 항상 균형 상태에 있기 때문에 h는 log n에 비례한다. 자바에서 PriorityQueue 클래스는 힙으로 구현되어 있으며, Queue 인터페이스에 정의된 offer, poll을 제공한다. 
 
+- offer: 큐에 요소를 추가하며, 모든 노드가 '힙 속성을' 갖도록 힙을 갱신한다. 실행 시간은  log n이다.
+- poll: 루트로부터 큐에서 가장 작은 요소를 제거하고 힙을 갱신한다. 실행 시간은 log n이다.
+
+PriorityQueue 객체가 주어지만 아래와 같이 n개의 요소의 컬렉션을 손쉽게 정렬할 수 있다.
+1. offer로 PriorityQueue 요소를 추가한다.
+2. poll을 호출해서 큐에서 요소들을 제거하고 List에 요소들을 추가한다.
+
+poll 메소드는 큐에 남아있는 가장 작은 요소들을 반환하므로 요소는 오름차순으로 List에 추가된다. 이러한 정렬 방식을 힙 정렬이라고 한다. 
 
 
+## 17.6 제한된 힙 정렬
+제한된 히븐 최대 k개의 요소만 담을 수 있는 힙이다. n개의 요소가 있다면 아래와 같이 k개의 가장 큰 요소를 추적할 수 있다. 
+
+초기에 힙은 비어있다. 각 요소인 x에 대해 다음을 수행한다.
+- 분기 1 : 힙이 가득차지 않았으면 x를 추가 O(log k)
+- 분기 2 : 힙이 가득 차면 x를 힙의 가장 작은 요소와 비교, x가 더 작으면 x는 상위 k개의 요소가 될 수 없으므로 버린다. O(1) 
+- 분기 3 : 힙이 가득 차고 x가 힙의 가장 작은 요소 보다 크면 힙에서 가장 작은 요소를 버리고( O(log k) ) x를 추가한다( O(log k)).
+
+최악의 상황에서 요소가 오름차순이라면 항상 분기 3을 실행한다. 이때 n개 요소를 처리하는 총 시간은 O ( n log k)이고 n은 선형이다. 
 
 
+## 17.7 공간 복잡도
+
+시간적으로는 고려했지만 만흔 알고리즘에서는 공간에 대해서도 고민해야 한다. 예를 들어 병합 정렬의 단점 중 하나는 데이터의 복사본을 만들어야 한다는 것이다. 
+현재 구현한 병합 정렬에서 할당하는 총 공간은 O(n log n)이다. 최대 O( n )까지 낮출 수 있다. 대조적으로 삽입 정렬은 바로 비교, 정렬하므로 데이터를 복사하지 않는다. 
+따라서 공간적으로 개수의 크기에 의존하지 않는다. 위에서 구현한 힙 정렬은 PriorityQueue를 생성하므로 공간은 O( n )이다. 하지만 리스트를 그 자리에서 바로 정렬하면 O( 1 ) 공간에서 힙 정렬을 할 수 있다. 
 
 
 ------------------------------------------
@@ -179,4 +201,6 @@ w라는 패스의 수는 단어의 너비에 의존하지만, 단어의 개수�
 
 External sorting algorithms generally fall into two types, distribution sorting, which resembles quicksort, and external merge sort, which resembles merge sort. External merge sort typically uses a hybrid sort-merge strategy. In the sorting phase, chunks of data small enough to fit in main memory are read, sorted, and written out to a temporary file. In the merge phase, the sorted subfiles are combined into a single larger file.
 
-<a name="bst">[2]</a> : n computer science, a binary search tree (BST), also called an ordered or sorted binary tree, is a rooted binary tree data structure with the key of each internal node being greater than all the keys in the respective node's left subtree and less than the ones in its right subtree. The time complexity of operations on the binary search tree is linear with respect to the height of the tree.
+<a name="bst">[2]</a> : In computer science, a binary search tree (BST), also called an ordered or sorted binary tree, is a rooted binary tree data structure with the key of each internal node being greater than all the keys in the respective node's left subtree and less than the ones in its right subtree. The time complexity of operations on the binary search tree is linear with respect to the height of the tree.
+
+<a name="heapsort">[2]</a> : In computer science, heapsort is a comparison-based sorting algorithm which can be thought of as "an implementation of selection sort using the right data structure."[3] Like selection sort, heapsort divides its input into a sorted and an unsorted region, and it iteratively shrinks the unsorted region by extracting the largest element from it and inserting it into the sorted region. Unlike selection sort, heapsort does not waste time with a linear-time scan of the unsorted region; rather, heap sort maintains the unsorted region in a heap data structure to efficiently find the largest element in each step.
