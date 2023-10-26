@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -12,7 +13,9 @@ import java.util.stream.IntStream;
 public class Search {
     /**
      * 배열 검색
-     * 1. 선형 검색
+     * 1. 선형 탐색
+     * 2. 보초법
+     * 3. 이진 탐색
      */
 
     int[] target = {};
@@ -80,9 +83,31 @@ public class Search {
 //        이미 배열이 정렬됐을 경우를 가정
 //        중간 값을 확인해서 찾고자하는 값이 그 값보다 큰 수 인지, 작은 수 인지로
 //        탐색할 구간을 줄여나간다.
+
+//        Arrays.binarySearch() :: 이진 검색
+
         int[] array = Arrays.copyOf(target, target.length);
         Arrays.sort(array);
 
-    }
+        log.warn("{} {}", array, targetNumber);
+        int startIdx = 0;
+        int midIdx = 0;
+        int endIdx = array.length - 1;
+        int result = 0;
 
+        do {
+            midIdx = Math.floorDiv(startIdx + endIdx, 2);
+            int pick = array[midIdx];
+
+            if( pick == targetNumber ) {
+                result = midIdx;
+                break;
+            }
+            else if ( pick < targetNumber ) startIdx = midIdx + 1;
+            else endIdx = midIdx - 1;
+
+        } while (startIdx <= endIdx);
+
+        print("binarySearch", midIdx);
+    }
 }
